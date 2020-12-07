@@ -1,25 +1,42 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useContext } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+
+import CircularProgress from '@material-ui/core/CircularProgress';
+import ListProducts from './components/ListProducts';
+import FormAction from './components/FormAction';
+import Header from './components/Header';
+
+import ProductsProvider from './context/ProductsContext';
+import LoadingProvider, { LoadingContext } from './context/LoadingContext';
+import DetailsProductProvider from './context/DetailsProductContext';
+import CategoryProvider from './context/CategoryContext';
+
+const useStyles = makeStyles((theme) => ({
+	root: {
+		display: 'flex',
+		'& > * + *': {
+			marginLeft: theme.spacing(2),
+		},
+	},
+}));
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+	const { loadingCount } = useContext(LoadingContext);
+	const classes = useStyles();
+	return (
+		<LoadingProvider>
+			{loadingCount > 0 && <CircularProgress />}
+			<CategoryProvider>
+				<ProductsProvider>
+					<DetailsProductProvider>
+						<Header />
+						<FormAction />
+						<ListProducts />
+					</DetailsProductProvider>
+				</ProductsProvider>
+			</CategoryProvider>
+		</LoadingProvider>
+	);
 }
 
 export default App;
